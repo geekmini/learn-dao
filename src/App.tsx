@@ -1,119 +1,171 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { curriculum } from './data/curriculum'
+import type { WeekCard } from './data/curriculum'
+import { useApiSettings } from './hooks/useApiSettings'
+import { useChatHistory } from './hooks/useChatHistory'
+import { ChatButton } from './components/ChatButton'
+import { ChatModal } from './components/ChatModal'
+import { SettingsModal } from './components/SettingsModal'
 import './App.css'
 
+function WeekCardWithChat({
+  card,
+  weekLabelClass,
+  onOpenChat,
+}: {
+  card: WeekCard
+  weekLabelClass: string
+  onOpenChat: (card: WeekCard) => void
+}) {
+  const { hasHistory } = useChatHistory(card.id)
+
+  return (
+    <div className="week-card">
+      <div className="week-card-header">
+        <div className={`week-label ${weekLabelClass}`}>{card.label}</div>
+        <ChatButton onClick={() => onOpenChat(card)} hasHistory={hasHistory} />
+      </div>
+      <div className="week-focus">{card.focus}</div>
+      <div className="week-items">
+        {card.items.map((item, i) => (
+          <span key={i}>
+            {item}
+            {i < card.items.length - 1 && <br />}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [chatCard, setChatCard] = useState<WeekCard | null>(null)
+  const [showSettings, setShowSettings] = useState(false)
+  const { settings, updateSettings, isConfigured } = useApiSettings()
+
+  const handleOpenChat = (card: WeekCard) => {
+    if (!isConfigured) {
+      setShowSettings(true)
+      return
+    }
+    setChatCard(card)
+  }
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+      <div className="header">
+        <div className="header-top">
+          <div className="header-eyebrow">{curriculum.headerEyebrow}</div>
+          <button
+            className="settings-btn"
+            onClick={() => setShowSettings(true)}
+            title="设置"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            {!isConfigured && <span className="settings-btn-alert" />}
+          </button>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
+        <h1>{curriculum.headerTitle}</h1>
+        <div className="header-sub">
+          {curriculum.headerSub.map((line, i) => (
+            <span key={i}>
+              {line}
+              {i < curriculum.headerSub.length - 1 && <br />}
+            </span>
+          ))}
         </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      </div>
 
-      <div className="ticks"></div>
+      <div className="spine">
+        <div className="spine-title">修行者学习的三根支柱（贯穿全程）</div>
+        {curriculum.pillars.map((pillar, i) => (
+          <div className="spine-cell" key={i}>
+            <strong>{pillar.title}</strong>
+            {pillar.body}
+          </div>
+        ))}
+      </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      {curriculum.phases.map((phase) => (
+        <div className={`phase-block ${phase.colorClass}`} key={phase.id}>
+          <div className="phase-header">
+            <span className="phase-badge">{phase.badge}</span>
+            <div>
+              <div className="phase-title">{phase.title}</div>
+              <div className="phase-sub">{phase.subtitle}</div>
+            </div>
+          </div>
+          <div className="divider"></div>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+          {phase.insight && (
+            <div className="insight">
+              <strong>{phase.insight.split('：')[0]}：</strong>
+              {phase.insight.split('：').slice(1).join('：')}
+            </div>
+          )}
+
+          <div className="weeks-row">
+            {phase.weeks.map((week) => (
+              <WeekCardWithChat
+                key={week.id}
+                card={week}
+                weekLabelClass=""
+                onOpenChat={handleOpenChat}
+              />
+            ))}
+          </div>
+
+          <div className="two-col">
+            {phase.boxes.map((box, i) => (
+              <div className="pbox" key={i}>
+                <div className="pbox-title">{box.title}</div>
+                <div className="pbox-body">
+                  {box.body.map((line, j) => (
+                    <span key={j}>
+                      {line}
+                      {j < box.body.length - 1 && <br />}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="milestone">
+            <span className="dot"></span>
+            {phase.milestone}
+          </div>
+        </div>
+      ))}
+
+      <div className="footer-block">
+        <div className="footer-title">{curriculum.footerTitle}</div>
+        <div className="questions-grid">
+          {curriculum.footerQuestions.map((q, i) => (
+            <div className="q-item" key={i}>{q}</div>
+          ))}
+        </div>
+        <div className="footer-note">{curriculum.footerNote}</div>
+      </div>
+
+      {chatCard && (
+        <ChatModal
+          card={chatCard}
+          apiSettings={settings}
+          onClose={() => setChatCard(null)}
+        />
+      )}
+
+      {showSettings && (
+        <SettingsModal
+          settings={settings}
+          onSave={updateSettings}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
     </>
   )
 }
