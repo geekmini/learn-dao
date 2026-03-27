@@ -1,6 +1,10 @@
 import { streamText, type UIMessage } from 'ai'
 import { createAnthropic } from '@ai-sdk/anthropic'
 
+export const config = {
+  runtime: 'edge',
+}
+
 function convertMessages(uiMessages: UIMessage[]) {
   return uiMessages
     .filter((m) => m.role !== 'system')
