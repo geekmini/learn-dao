@@ -1,8 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { config } from 'dotenv'
 import handler from '../../../api/chat'
-
-config()
 
 const API_KEY = process.env.ANTHROPIC_API_KEY
 

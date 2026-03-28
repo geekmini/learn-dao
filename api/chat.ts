@@ -1,20 +1,30 @@
-import { streamText, type UIMessage } from 'ai'
+import { streamText } from 'ai'
 import { createAnthropic } from '@ai-sdk/anthropic'
 
 export const config = {
   runtime: 'edge',
 }
 
-function convertMessages(uiMessages: UIMessage[]) {
-  return uiMessages
+interface IncomingMessage {
+  role: string
+  content?: string
+  parts?: Array<{ type: string; text?: string }>
+}
+
+function convertMessages(messages: IncomingMessage[]) {
+  return messages
     .filter((m) => m.role !== 'system')
-    .map((m) => ({
-      role: m.role as 'user' | 'assistant',
-      content: m.parts
+    .map((m) => {
+      const textFromParts = m.parts
         ?.filter((p) => p.type === 'text')
-        .map((p) => (p as { type: 'text'; text: string }).text)
-        .join('') ?? '',
-    }))
+        .map((p) => p.text ?? '')
+        .join('')
+      const content = textFromParts || m.content || ''
+      return {
+        role: m.role as 'user' | 'assistant',
+        content,
+      }
+    })
 }
 
 export default async function handler(req: Request) {
