@@ -14,6 +14,10 @@
   },
   "files.exclude": {
     "node_modules": true,
-    "pnpm-lock.yaml": true
+    "pnpm-lock.yaml": true,
+    ".vercel": true,
+    "dist": true,
+    "playwright-report": true,
+    "test-results": true
   }
 }

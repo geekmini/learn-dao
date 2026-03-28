@@ -8,13 +8,17 @@ export const config = {
 function convertMessages(uiMessages: UIMessage[]) {
   return uiMessages
     .filter((m) => m.role !== 'system')
-    .map((m) => ({
-      role: m.role as 'user' | 'assistant',
-      content: m.parts
+    .map((m) => {
+      const textFromParts = m.parts
         ?.filter((p) => p.type === 'text')
         .map((p) => (p as { type: 'text'; text: string }).text)
-        .join('') ?? '',
-    }))
+        .join('')
+      const content = textFromParts || (typeof m.content === 'string' ? m.content : '')
+      return {
+        role: m.role as 'user' | 'assistant',
+        content,
+      }
+    })
 }
 
 export default async function handler(req: Request) {
