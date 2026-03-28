@@ -290,8 +290,8 @@
   background: white;
   border-radius: 14px;
   width: 100%;
-  max-width: 600px;
-  height: 70vh;
+  max-width: 960px;
+  height: 88vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -305,12 +305,12 @@
 }
 .modal-title {
   font-family: 'Noto Serif SC', serif;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--text);
 }
 .modal-subtitle {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text3);
   margin-top: 2px;
 }
@@ -346,17 +346,17 @@
 .modal-empty {
   text-align: center;
   color: var(--text3);
-  font-size: 13px;
+  font-size: 15px;
   padding: 40px 20px;
   line-height: 1.8;
 }
 .modal-empty-hint {
-  font-size: 12px;
+  font-size: 13px;
   margin-top: 8px;
   color: var(--gray-200);
 }
 .modal-message {
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.7;
 }
 .modal-message-role {
@@ -416,12 +416,29 @@
   border-top: 0.5px solid var(--border);
   margin: 10px 0;
 }
+.modal-message-assistant .modal-message-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 8px 0;
+  font-size: 14px;
+}
+.modal-message-assistant .modal-message-content th,
+.modal-message-assistant .modal-message-content td {
+  border: 0.5px solid var(--border2);
+  padding: 6px 10px;
+  text-align: left;
+}
+.modal-message-assistant .modal-message-content th {
+  background: var(--bg2);
+  font-weight: 500;
+  color: var(--text);
+}
 .modal-typing {
   color: var(--text3);
   font-style: italic;
 }
 .modal-error {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--amber-600);
   background: var(--amber-50);
   padding: 8px 12px;
@@ -438,7 +455,7 @@
 .modal-input {
   flex: 1;
   font-family: 'Noto Sans SC', sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   padding: 8px 12px;
   border: 0.5px solid var(--border);
   border-radius: 8px;
@@ -451,7 +468,7 @@
 .modal-input::placeholder { color: var(--text3); }
 .modal-send-btn {
   font-family: 'Noto Sans SC', sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   padding: 8px 16px;
   background: var(--teal-600);
   color: white;
@@ -519,5 +536,5 @@
 @media (max-width: 600px) {
   .weeks-row, .spine, .two-col, .questions-grid { grid-template-columns: 1fr; }
   .header h1 { font-size: 22px; }
-  .modal-container { height: 85vh; }
+  .modal-container { height: 92vh; }
 }

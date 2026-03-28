@@ -80,7 +80,7 @@ function App() {
       </div>
 
       <div className="spine">
-        <div className="spine-title">修行者学习的三根支柱（贯穿全程）</div>
+        <div className="spine-title">修行者学习的三根支柱</div>
         {curriculum.pillars.map((pillar, i) => (
           <div className="spine-cell" key={i}>
             <strong>{pillar.title}</strong>

@@ -13,7 +13,7 @@ test.describe('Feature: 课程大纲展示', () => {
     test('should display the header with title and subtitle', async () => {
       await expect(curriculum.headerTitle).toHaveText('三个月修行计划')
       await expect(curriculum.header.locator('.header-eyebrow')).toHaveText(
-        '正一派 · 修行者学习路线',
+        '正一派学习路线',
       )
     })
 
@@ -23,7 +23,7 @@ test.describe('Feature: 课程大纲展示', () => {
       await expect(cells).toHaveCount(3)
       await expect(cells.nth(0).locator('strong')).toHaveText('实修优先')
       await expect(cells.nth(1).locator('strong')).toHaveText('义理为地图')
-      await expect(cells.nth(2).locator('strong')).toHaveText('佛学是利器')
+      await expect(cells.nth(2).locator('strong')).toHaveText('道为主佛为辅')
     })
   })
 

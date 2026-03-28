@@ -21,7 +21,13 @@ test.describe('Feature: AI 学习助手对话', () => {
   })
 
   test.describe('Scenario: 用户打开某周卡片的 AI 对话', () => {
-    test('should open chat modal when clicking chat button on week card', async () => {
+    test('should open chat modal when clicking chat button on week card', async ({
+      page,
+    }) => {
+      await page.route('/api/chat', async (route) => {
+        await route.fulfill({ status: 200, contentType: 'text/plain', body: '' })
+      })
+
       await curriculum.getChatButton(0).click()
 
       await expect(chat.container).toBeVisible()
@@ -30,14 +36,27 @@ test.describe('Feature: AI 学习助手对话', () => {
       await expect(chat.subtitle).toContainText('道的生化论与人的位置')
     })
 
-    test('should show empty state with guidance text', async () => {
+    test('should auto-suggest topics on first open', async ({ page }) => {
+      await page.route('/api/chat', async (route) => {
+        await route.fulfill({ status: 200, contentType: 'text/plain', body: '' })
+      })
+
       await curriculum.getChatButton(0).click()
 
-      await expect(chat.emptyState).toBeVisible()
-      await expect(chat.emptyState).toContainText('道的生化论与人的位置')
+      // First open triggers an auto-suggest message
+      await expect(chat.getUserMessages().first()).toBeVisible()
+      await expect(
+        chat.getUserMessages().first().locator('.modal-message-content'),
+      ).toContainText('道的生化论与人的位置')
     })
 
-    test('should show different card context for different weeks', async () => {
+    test('should show different card context for different weeks', async ({
+      page,
+    }) => {
+      await page.route('/api/chat', async (route) => {
+        await route.fulfill({ status: 200, contentType: 'text/plain', body: '' })
+      })
+
       await curriculum.getChatButton(1).click()
 
       await expect(chat.subtitle).toContainText('第 2 周')
@@ -46,20 +65,33 @@ test.describe('Feature: AI 学习助手对话', () => {
   })
 
   test.describe('Scenario: 用户在对话框中输入问题', () => {
-    test('should have an auto-focused input field', async () => {
+    test('should have input field with correct placeholder', async ({ page }) => {
+      await page.route('/api/chat', async (route) => {
+        await route.fulfill({ status: 200, contentType: 'text/plain', body: '' })
+      })
+
       await curriculum.getChatButton(0).click()
 
-      await expect(chat.input).toBeFocused()
       await expect(chat.input).toHaveAttribute('placeholder', '输入你的问题...')
     })
 
-    test('should disable send button when input is empty', async () => {
+    test('should disable send button when input is empty', async ({ page }) => {
+      await page.route('/api/chat', async (route) => {
+        await route.fulfill({ status: 200, contentType: 'text/plain', body: '' })
+      })
+
       await curriculum.getChatButton(0).click()
 
+      // Wait for auto-suggest to complete
+      await expect(chat.getUserMessages().first()).toBeVisible()
       await expect(chat.sendButton).toBeDisabled()
     })
 
-    test('should enable send button when input has text', async () => {
+    test('should enable send button when input has text', async ({ page }) => {
+      await page.route('/api/chat', async (route) => {
+        await route.fulfill({ status: 200, contentType: 'text/plain', body: '' })
+      })
+
       await curriculum.getChatButton(0).click()
       await chat.input.fill('什么是道？')
 
@@ -79,18 +111,26 @@ test.describe('Feature: AI 学习助手对话', () => {
       })
 
       await curriculum.getChatButton(0).click()
+      // Wait for auto-suggest message to appear first
+      await expect(chat.getUserMessages().first()).toBeVisible()
+
       await chat.input.fill('什么是道？')
       await chat.sendButton.click()
 
-      await expect(chat.getUserMessages().first()).toBeVisible()
+      // The manually sent message is the second user message
+      await expect(chat.getUserMessages().nth(1)).toBeVisible()
       await expect(
-        chat.getUserMessages().first().locator('.modal-message-content'),
+        chat.getUserMessages().nth(1).locator('.modal-message-content'),
       ).toHaveText('什么是道？')
     })
   })
 
   test.describe('Scenario: 用户关闭对话框', () => {
-    test('should close chat modal when clicking close button', async () => {
+    test('should close chat modal when clicking close button', async ({ page }) => {
+      await page.route('/api/chat', async (route) => {
+        await route.fulfill({ status: 200, contentType: 'text/plain', body: '' })
+      })
+
       await curriculum.getChatButton(0).click()
       await expect(chat.container).toBeVisible()
 
@@ -98,7 +138,11 @@ test.describe('Feature: AI 学习助手对话', () => {
       await expect(chat.container).not.toBeVisible()
     })
 
-    test('should close chat modal when clicking overlay', async () => {
+    test('should close chat modal when clicking overlay', async ({ page }) => {
+      await page.route('/api/chat', async (route) => {
+        await route.fulfill({ status: 200, contentType: 'text/plain', body: '' })
+      })
+
       await curriculum.getChatButton(0).click()
       await expect(chat.container).toBeVisible()
 

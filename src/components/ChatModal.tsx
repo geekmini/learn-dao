@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { useCurriculumChat } from '../hooks/useCurriculumChat'
 import type { ApiSettings } from '../hooks/useApiSettings'
 import type { WeekCard } from '../data/curriculum'
@@ -24,7 +25,7 @@ export function ChatModal({ card, apiSettings, onClose }: ChatModalProps) {
     isLoading,
     error,
     clearChat,
-  } = useCurriculumChat(card.id, apiSettings)
+  } = useCurriculumChat(card.id, card, apiSettings)
 
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -81,7 +82,7 @@ export function ChatModal({ card, apiSettings, onClose }: ChatModalProps) {
               </div>
               <div className="modal-message-content">
                 {message.role === 'assistant'
-                  ? <Markdown>{getMessageText(message)}</Markdown>
+                  ? <Markdown remarkPlugins={[remarkGfm]}>{getMessageText(message)}</Markdown>
                   : getMessageText(message)
                 }
               </div>
