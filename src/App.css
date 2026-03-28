@@ -435,7 +435,18 @@
 }
 .modal-typing {
   color: var(--text3);
-  font-style: italic;
+}
+.typing-dots span {
+  animation: blink 1.4s infinite both;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0.2; }
+  40% { opacity: 1; }
 }
 .modal-error {
   font-size: 14px;
@@ -463,6 +474,11 @@
   color: var(--text);
   background: var(--bg);
   transition: border-color 0.2s;
+  resize: none;
+  min-height: 38px;
+  max-height: 120px;
+  line-height: 1.5;
+  field-sizing: content;
 }
 .modal-input:focus { border-color: var(--teal-400); }
 .modal-input::placeholder { color: var(--text3); }

@@ -41,6 +41,13 @@ export function ChatModal({ card, apiSettings, onClose }: ChatModalProps) {
     setInput('')
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSubmit(e)
+    }
+  }
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container" onClick={(e) => e.stopPropagation()}>
@@ -88,10 +95,12 @@ export function ChatModal({ card, apiSettings, onClose }: ChatModalProps) {
               </div>
             </div>
           ))}
-          {isLoading && messages.length > 0 && getMessageText(messages[messages.length - 1]) === '' && (
+          {isLoading && (messages.length === 0 || getMessageText(messages[messages.length - 1]) === '') && (
             <div className="modal-message modal-message-assistant">
               <div className="modal-message-role">导师</div>
-              <div className="modal-message-content modal-typing">思考中...</div>
+              <div className="modal-message-content modal-typing">
+                <span className="typing-dots"><span>.</span><span>.</span><span>.</span></span>
+              </div>
             </div>
           )}
           {error && (
@@ -103,13 +112,15 @@ export function ChatModal({ card, apiSettings, onClose }: ChatModalProps) {
         </div>
 
         <form className="modal-input-form" onSubmit={handleSubmit}>
-          <input
+          <textarea
             className="modal-input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="输入你的问题..."
             disabled={isLoading}
             autoFocus
+            rows={1}
           />
           <button
             className="modal-send-btn"
