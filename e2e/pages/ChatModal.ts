@@ -22,7 +22,7 @@ export class ChatModal {
     this.subtitle = page.locator('.modal-subtitle')
     this.messages = page.locator('.modal-message')
     this.emptyState = page.locator('.modal-empty')
-    this.input = page.locator('.modal-input')
+    this.input = page.locator('textarea.modal-input')
     this.sendButton = page.locator('.modal-send-btn')
     this.clearButton = page.locator('.modal-clear-btn')
     this.closeButton = page.locator('.modal-container .modal-close-btn')
