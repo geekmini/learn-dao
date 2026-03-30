@@ -12,6 +12,8 @@ test.describe('Feature: AI 学习助手对话', () => {
     curriculum = new CurriculumPage(page)
     chat = new ChatModal(page)
     await curriculum.goto()
+    // Wait for auth + settings to load before interacting
+    await expect(curriculum.userMenuButton).toBeVisible()
   })
 
   test.describe('Scenario: 用户打开某周卡片的 AI 对话', () => {
