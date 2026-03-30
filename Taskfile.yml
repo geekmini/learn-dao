@@ -1,0 +1,55 @@
+version: '3'
+
+tasks:
+  setup:
+    desc: Install all dependencies
+    cmds:
+      - pnpm install
+      - pnpm exec playwright install --with-deps
+
+  dev:
+    desc: Start local dev server (frontend + API)
+    cmds:
+      - pnpm dev
+
+  build:
+    desc: Type-check and build for production
+    cmds:
+      - pnpm build
+
+  lint:
+    desc: Run ESLint check
+    cmds:
+      - pnpm lint:check
+
+  lint:fix:
+    desc: Run ESLint auto-fix
+    cmds:
+      - pnpm lint:fix
+
+  test:
+    desc: Run unit tests
+    cmds:
+      - pnpm test
+
+  test:integration:
+    desc: Run API integration tests (requires .env)
+    cmds:
+      - pnpm test:integration
+
+  test:e2e:
+    desc: Run Playwright e2e tests
+    cmds:
+      - pnpm test:e2e
+
+  test:e2e:ui:
+    desc: Run Playwright e2e tests with UI
+    cmds:
+      - pnpm test:e2e:ui
+
+  test:all:
+    desc: Run all tests (unit + integration + e2e)
+    cmds:
+      - task: test
+      - task: test:integration
+      - task: test:e2e

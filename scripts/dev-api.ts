@@ -1,6 +1,7 @@
 import { createServer } from 'node:http'
 import { config } from 'dotenv'
 
+config({ path: '.env.local' })
 config()
 
 const PORT = 3000
