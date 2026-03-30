@@ -1,73 +1,70 @@
-# React + TypeScript + Vite
+# Learn DAO
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Daoist cultivation curriculum learning platform with a built-in AI study assistant.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Vite + React 19 + TypeScript
+- Vercel Serverless Functions (API)
+- Supabase (Auth + Database)
+- Vercel AI SDK v6 + Anthropic Claude
 
-## React Compiler
+## Prerequisites
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1. Install System Dependencies
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+brew bundle
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Or install manually:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+brew install node@22 pnpm go-task vercel-cli
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 2. Install Project Dependencies
+
+```bash
+task setup
+```
+
+### 3. Configure Environment Variables
+
+Copy `.env.example` and fill in the values:
+
+```bash
+cp .env.example .env.local
+```
+
+Required variables:
+
+| Variable | Purpose | Where to get it |
+|----------|---------|-----------------|
+| `VITE_SUPABASE_URL` | Frontend Supabase connection | Supabase Dashboard → Settings → API |
+| `VITE_SUPABASE_ANON_KEY` | Frontend Supabase anon key | Same as above |
+| `SUPABASE_URL` | Server-side Supabase connection | Same as `VITE_SUPABASE_URL` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-side JWT verification | Supabase Dashboard → Settings → API → service_role (secret) |
+
+### 4. Supabase Setup
+
+- Enable **Google** OAuth in Supabase Dashboard → Authentication → Providers
+- Create an OAuth client in Google Cloud Console with redirect URI: `https://<project-ref>.supabase.co/auth/v1/callback`
+
+## Development
+
+```bash
+task dev        # Start local dev server (Vite + API)
+task build      # Build for production
+task lint       # ESLint check
+task lint:fix   # ESLint auto-fix
+```
+
+## Testing
+
+```bash
+task test            # Unit tests
+task test:integration # API integration tests (requires API key in .env)
+task test:e2e        # Playwright end-to-end tests
+task test:all        # Run all tests
 ```

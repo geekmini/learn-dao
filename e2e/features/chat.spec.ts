@@ -1,23 +1,17 @@
 import { test, expect } from '@playwright/test'
 import { CurriculumPage } from '../pages/CurriculumPage'
-import { SettingsModal } from '../pages/SettingsModal'
 import { ChatModal } from '../pages/ChatModal'
+import { mockAuthenticatedUser } from '../helpers/mockAuth'
 
 test.describe('Feature: AI 学习助手对话', () => {
   let curriculum: CurriculumPage
-  let settings: SettingsModal
   let chat: ChatModal
 
   test.beforeEach(async ({ page }) => {
+    await mockAuthenticatedUser(page)
     curriculum = new CurriculumPage(page)
-    settings = new SettingsModal(page)
     chat = new ChatModal(page)
-
-    // Given: user has configured API key
     await curriculum.goto()
-    await curriculum.settingsButton.click()
-    await settings.fillApiKey('sk-ant-test-key')
-    await settings.save()
   })
 
   test.describe('Scenario: 用户打开某周卡片的 AI 对话', () => {
@@ -43,7 +37,6 @@ test.describe('Feature: AI 学习助手对话', () => {
 
       await curriculum.getChatButton(0).click()
 
-      // First open triggers an auto-suggest message
       await expect(chat.getUserMessages().first()).toBeVisible()
       await expect(
         chat.getUserMessages().first().locator('.modal-message-content'),
@@ -82,7 +75,6 @@ test.describe('Feature: AI 学习助手对话', () => {
 
       await curriculum.getChatButton(0).click()
 
-      // Wait for auto-suggest to complete
       await expect(chat.getUserMessages().first()).toBeVisible()
       await expect(chat.sendButton).toBeDisabled()
     })
@@ -101,7 +93,6 @@ test.describe('Feature: AI 学习助手对话', () => {
 
   test.describe('Scenario: 用户发送消息（mock API）', () => {
     test('should display user message after sending', async ({ page }) => {
-      // Mock the API to return a streamed response
       await page.route('/api/chat', async (route) => {
         await route.fulfill({
           status: 200,
@@ -111,13 +102,11 @@ test.describe('Feature: AI 学习助手对话', () => {
       })
 
       await curriculum.getChatButton(0).click()
-      // Wait for auto-suggest message to appear first
       await expect(chat.getUserMessages().first()).toBeVisible()
 
       await chat.input.fill('什么是道？')
       await chat.sendButton.click()
 
-      // The manually sent message is the second user message
       await expect(chat.getUserMessages().nth(1)).toBeVisible()
       await expect(
         chat.getUserMessages().nth(1).locator('.modal-message-content'),

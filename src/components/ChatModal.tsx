@@ -4,10 +4,12 @@ import remarkGfm from 'remark-gfm'
 import { useCurriculumChat } from '../hooks/useCurriculumChat'
 import type { ApiSettings } from '../hooks/useApiSettings'
 import type { WeekCard } from '../data/curriculum'
+import type { Session } from '@supabase/supabase-js'
 
 interface ChatModalProps {
   card: WeekCard
   apiSettings: ApiSettings
+  session: Session | null
   onClose: () => void
 }
 
@@ -18,14 +20,14 @@ function getMessageText(message: { parts: Array<{ type: string; text?: string }>
     .join('')
 }
 
-export function ChatModal({ card, apiSettings, onClose }: ChatModalProps) {
+export function ChatModal({ card, apiSettings, session, onClose }: ChatModalProps) {
   const {
     messages,
     sendMessage,
     isLoading,
     error,
     clearChat,
-  } = useCurriculumChat(card.id, card, apiSettings)
+  } = useCurriculumChat(card.id, card, apiSettings, session)
 
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)

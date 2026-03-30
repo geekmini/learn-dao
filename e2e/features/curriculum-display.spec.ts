@@ -1,10 +1,12 @@
 import { test, expect } from '@playwright/test'
 import { CurriculumPage } from '../pages/CurriculumPage'
+import { mockSupabaseRequests } from '../helpers/mockSupabase'
 
 test.describe('Feature: 课程大纲展示', () => {
   let curriculum: CurriculumPage
 
   test.beforeEach(async ({ page }) => {
+    await mockSupabaseRequests(page)
     curriculum = new CurriculumPage(page)
     await curriculum.goto()
   })
