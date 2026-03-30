@@ -31,6 +31,7 @@ test.describe('Feature: API 设置管理', () => {
       curriculum = new CurriculumPage(page)
       settings = new SettingsModal(page)
       await curriculum.goto()
+      await expect(curriculum.userMenuButton).toBeVisible()
     })
 
     test('should show user avatar in header when logged in', async () => {
