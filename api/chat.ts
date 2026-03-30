@@ -51,8 +51,10 @@ export default async function handler(req: Request) {
     })
   }
 
-  const adminClient = createClient(supabaseUrl, supabaseServiceKey)
-  const { error } = await adminClient.auth.getUser(authToken)
+  const adminClient = createClient(supabaseUrl, supabaseServiceKey, {
+    global: { headers: { Authorization: `Bearer ${authToken}` } },
+  })
+  const { error } = await adminClient.auth.getUser()
   if (error) {
     return new Response(JSON.stringify({ error: '登录已过期，请重新登录' }), {
       status: 401,
