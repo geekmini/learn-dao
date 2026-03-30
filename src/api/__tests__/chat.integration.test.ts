@@ -10,7 +10,7 @@ describe('/api/chat handler', () => {
     expect(res.status).toBe(405)
   })
 
-  it('should return 400 when apiKey is missing', async () => {
+  it('should return 401 when authToken is missing', async () => {
     const req = new Request('http://localhost/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -22,9 +22,9 @@ describe('/api/chat handler', () => {
       }),
     })
     const res = await handler(req)
-    expect(res.status).toBe(400)
+    expect(res.status).toBe(401)
     const body = await res.json()
-    expect(body.error).toBe('请先设置 API Key')
+    expect(body.error).toBe('请先登录')
   })
 })
 

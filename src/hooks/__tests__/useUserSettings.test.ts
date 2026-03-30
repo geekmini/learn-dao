@@ -12,7 +12,7 @@ vi.mock('../../lib/supabase', () => ({
       return {
         select: () => ({
           eq: () => ({
-            single: () => mockSingle(),
+            maybeSingle: () => mockSingle(),
           }),
         }),
         upsert: (...upsertArgs: unknown[]) => ({
