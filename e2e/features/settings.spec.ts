@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test'
 import { CurriculumPage } from '../pages/CurriculumPage'
 import { SettingsModal } from '../pages/SettingsModal'
 import { mockAuthenticatedUser } from '../helpers/mockAuth'
+import { mockSupabaseRequests } from '../helpers/mockSupabase'
 
 test.describe('Feature: API 设置管理', () => {
   let curriculum: CurriculumPage
@@ -9,6 +10,7 @@ test.describe('Feature: API 设置管理', () => {
 
   test.describe('Scenario: 未登录用户点击聊天按钮', () => {
     test.beforeEach(async ({ page }) => {
+      await mockSupabaseRequests(page)
       curriculum = new CurriculumPage(page)
       await curriculum.goto()
     })

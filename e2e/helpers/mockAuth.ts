@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test'
+import { mockSupabaseRequests } from './mockSupabase'
 
 const SUPABASE_PROJECT_REF = 'ygheauzirsxihpeyrfpr'
 
@@ -16,38 +17,9 @@ const MOCK_USER = {
  * and mocks Supabase REST/auth endpoints so the app believes the user is logged in.
  */
 export async function mockAuthenticatedUser(page: Page) {
-  // Mock Supabase auth endpoint to return our fake user
-  await page.route(`https://${SUPABASE_PROJECT_REF}.supabase.co/auth/v1/**`, async (route) => {
-    const url = route.request().url()
+  await mockSupabaseRequests(page)
 
-    if (url.includes('/token')) {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          access_token: 'mock-access-token',
-          token_type: 'bearer',
-          expires_in: 3600,
-          refresh_token: 'mock-refresh-token',
-          user: MOCK_USER,
-        }),
-      })
-    } else if (url.includes('/user')) {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(MOCK_USER),
-      })
-    } else {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({}),
-      })
-    }
-  })
-
-  // Mock Supabase REST API for user_settings and chat_messages
+  // Override user_settings to return configured API key
   await page.route(`https://${SUPABASE_PROJECT_REF}.supabase.co/rest/v1/user_settings**`, async (route) => {
     const method = route.request().method()
     if (method === 'GET') {
@@ -55,20 +27,6 @@ export async function mockAuthenticatedUser(page: Page) {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({ api_key: 'sk-ant-e2e-test', model: 'claude-sonnet-4-6' }),
-      })
-    } else {
-      await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' })
-    }
-  })
-
-  await page.route(`https://${SUPABASE_PROJECT_REF}.supabase.co/rest/v1/chat_messages**`, async (route) => {
-    const method = route.request().method()
-    if (method === 'GET') {
-      // Return empty — no chat history
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: 'null',
       })
     } else {
       await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' })
